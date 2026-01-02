@@ -8,6 +8,50 @@ import VoteButtons from '@/components/posts/VoteButtons'
 import SocialShare from '@/components/posts/SocialShare'
 import CommentSection from '@/components/posts/CommentSection'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
+
+export async function generateMetadata({
+    params,
+}: {
+    params: { postId: string }
+}): Promise<Metadata> {
+    const supabase = await createClient()
+
+    // Fetch post for metadata (Next.js dedupes this request if it matches the page fetch?)
+    // Actually, with Supabase caching might not be automatic unless using unstable_cache
+    // But for metadata it's fine to fetch again or use cache.
+    const { data: post } = await supabase
+        .from('posts')
+        .select(`
+            title, 
+            content, 
+            images:post_images(storage_path, display_order)
+        `)
+        .eq('id', params.postId)
+        .single()
+
+    if (!post) {
+        return {
+            title: 'Post Not Found',
+        }
+    }
+
+    const firstImage = (post.images || []).sort((a: any, b: any) => a.display_order - b.display_order)[0]
+    const imageUrl = firstImage
+        ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/post-images/${firstImage.storage_path}`
+        : undefined
+
+    return {
+        title: `${post.title} | TennisLover`,
+        description: post.content.substring(0, 160) + '...',
+        openGraph: {
+            title: post.title,
+            description: post.content.substring(0, 160) + '...',
+            images: imageUrl ? [imageUrl] : [],
+            type: 'article',
+        },
+    }
+}
 
 export default async function PostDetailPage({
     params,

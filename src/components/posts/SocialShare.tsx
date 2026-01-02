@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Facebook, Twitter, Linkedin, Share2, Link as LinkIcon, Check } from 'lucide-react'
+import { Facebook, Twitter, Linkedin, Instagram, Share2, Link as LinkIcon, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
     getFacebookShareUrl,
@@ -33,7 +33,10 @@ export default function SocialShare({
     const supabase = createClient()
 
     useEffect(() => {
-        setIsNativeShareAvailable(canUseWebShare())
+        // Only use native share on mobile devices where it's robust
+        // On desktop, it's better to show specific buttons
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+        setIsNativeShareAvailable(canUseWebShare() && isMobile)
     }, [])
 
     const incrementShareCount = async () => {
@@ -60,6 +63,16 @@ export default function SocialShare({
     const handleLinkedInShare = () => {
         openShareWindow(getLinkedInShareUrl(postUrl))
         incrementShareCount()
+    }
+
+    const handleInstagramShare = async () => {
+        // Instagram doesn't support direct web sharing
+        // We copy the link and open Instagram for the user to paste/use
+        await copyToClipboard(postUrl)
+        setCopied(true)
+        incrementShareCount()
+        window.open('https://www.instagram.com/', '_blank')
+        setTimeout(() => setCopied(false), 2000)
     }
 
     const handleCopyLink = async () => {
@@ -100,7 +113,7 @@ export default function SocialShare({
                         variant="outline"
                         size="sm"
                         onClick={handleFacebookShare}
-                        className="gap-2"
+                        className="gap-2 text-[#1877F2] hover:text-[#1877F2] hover:bg-blue-50"
                         title="Share on Facebook"
                     >
                         <Facebook className="w-4 h-4" />
@@ -111,7 +124,7 @@ export default function SocialShare({
                         variant="outline"
                         size="sm"
                         onClick={handleTwitterShare}
-                        className="gap-2"
+                        className="gap-2 text-[#1DA1F2] hover:text-[#1DA1F2] hover:bg-sky-50"
                         title="Share on Twitter"
                     >
                         <Twitter className="w-4 h-4" />
@@ -122,11 +135,22 @@ export default function SocialShare({
                         variant="outline"
                         size="sm"
                         onClick={handleLinkedInShare}
-                        className="gap-2"
+                        className="gap-2 text-[#0A66C2] hover:text-[#0A66C2] hover:bg-blue-50"
                         title="Share on LinkedIn"
                     >
                         <Linkedin className="w-4 h-4" />
                         <span className="hidden sm:inline">LinkedIn</span>
+                    </Button>
+
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleInstagramShare}
+                        className="gap-2 text-[#E4405F] hover:text-[#E4405F] hover:bg-pink-50"
+                        title="Share on Instagram"
+                    >
+                        <Instagram className="w-4 h-4" />
+                        <span className="hidden sm:inline">Instagram</span>
                     </Button>
                 </>
             )}

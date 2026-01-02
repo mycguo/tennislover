@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input' // Assuming Input exists
 import { Eye, MessageCircle, Send } from 'lucide-react'
 import VoteButtons from './VoteButtons'
+import SocialShare from './SocialShare'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -127,22 +128,33 @@ export default function PostCard({ post, userId, userVote, initialLatestComment 
                 </CardDescription>
 
                 {/* Stats and Actions */}
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 border-b pb-4">
-                    <VoteButtons
-                        targetId={post.id}
-                        targetType="post"
-                        initialScore={post.vote_score || 0}
-                        initialUserVote={userVote}
-                        userId={userId}
-                        authorId={post.author_id}
-                    />
-                    <div className="flex items-center gap-1">
-                        <Eye className="w-4 h-4" />
-                        <span>{post.view_count || 0}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <MessageCircle className="w-4 h-4" />
-                        <span>{localCommentCount}</span>
+                <div className="flex flex-col gap-3 mb-4 border-b pb-4">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <VoteButtons
+                                targetId={post.id}
+                                targetType="post"
+                                initialScore={post.vote_score || 0}
+                                initialUserVote={userVote}
+                                userId={userId}
+                                authorId={post.author_id}
+                            />
+                            <div className="flex items-center gap-1">
+                                <Eye className="w-4 h-4" />
+                                <span>{post.view_count || 0}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <MessageCircle className="w-4 h-4" />
+                                <span>{localCommentCount}</span>
+                            </div>
+                        </div>
+
+                        <SocialShare
+                            postId={post.id}
+                            postTitle={post.title}
+                            postUrl={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/feed/${post.id}`}
+                            shareCount={post.share_count || 0}
+                        />
                     </div>
                 </div>
 
