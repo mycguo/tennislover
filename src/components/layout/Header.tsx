@@ -16,6 +16,7 @@ interface HeaderProps {
     id: string
     email?: string
     full_name?: string
+    alias?: string
     avatar_url?: string
   } | null
 }
@@ -60,9 +61,9 @@ export default function Header({ user }: HeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar>
-                      <AvatarImage src={user.avatar_url} alt={user.full_name || user.email || 'User'} />
+                      <AvatarImage src={user.avatar_url} alt={user.alias || user.full_name || user.email || 'User'} />
                       <AvatarFallback>
-                        {(user.full_name || user.email || 'U')[0].toUpperCase()}
+                        {(user.alias || user.full_name || user.email || 'U')[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -70,7 +71,7 @@ export default function Header({ user }: HeaderProps) {
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">{user.full_name || 'User'}</p>
+                      <p className="text-sm font-medium">{user.alias || user.full_name || 'User'}</p>
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                   </div>

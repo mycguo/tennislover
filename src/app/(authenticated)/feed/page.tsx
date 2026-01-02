@@ -11,7 +11,7 @@ export default async function FeedPage() {
     .from('posts')
     .select(`
       *,
-      author:users(id, full_name, avatar_url, skill_level)
+      author:users(id, full_name, alias, avatar_url, skill_level)
     `)
     .order('created_at', { ascending: false })
     .limit(20)
@@ -45,11 +45,11 @@ export default async function FeedPage() {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                       <span className="text-sm">
-                        {post.author?.full_name?.[0] || 'U'}
+                        {(post.author?.alias || post.author?.full_name)?.[0] || 'U'}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium">{post.author?.full_name || 'Unknown'}</p>
+                      <p className="text-sm font-medium">{post.author?.alias || post.author?.full_name || 'Unknown'}</p>
                       <p className="text-xs text-gray-500">
                         {new Date(post.created_at).toLocaleDateString()}
                       </p>

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Header from '@/components/layout/Header'
+import AliasPrompt from '@/components/common/AliasPrompt'
 
 export default async function AuthenticatedLayout({
   children,
@@ -30,6 +31,7 @@ export default async function AuthenticatedLayout({
     <div className="min-h-screen bg-gray-50">
       <Header user={userWithProfile} />
       <main>{children}</main>
+      <AliasPrompt userId={user.id} hasAlias={!!profile?.alias} />
     </div>
   )
 }
