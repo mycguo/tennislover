@@ -72,6 +72,9 @@ export default function CommentSection({ postId, userId }: CommentSectionProps) 
                 }
             })
 
+            // Sort root comments by newest first
+            rootComments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
             setComments(rootComments)
         }
         setLoading(false)
