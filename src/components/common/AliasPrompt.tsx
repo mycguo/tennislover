@@ -13,8 +13,11 @@ export default function AliasPrompt({ userId, hasAlias }: AliasPromptProps) {
 
     useEffect(() => {
         // Show dialog on mount if user doesn't have an alias
+        // Hide it if they do (e.g. after successful creation)
         if (!hasAlias) {
             setShowDialog(true)
+        } else {
+            setShowDialog(false)
         }
     }, [hasAlias])
 
