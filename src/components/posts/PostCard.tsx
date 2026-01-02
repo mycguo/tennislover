@@ -129,7 +129,8 @@ export default function PostCard({ post, userId, userVote, initialLatestComment 
                 {/* Stats and Actions */}
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 border-b pb-4">
                     <VoteButtons
-                        postId={post.id}
+                        targetId={post.id}
+                        targetType="post"
                         initialScore={post.vote_score || 0}
                         initialUserVote={userVote}
                         userId={userId}

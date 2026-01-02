@@ -5,6 +5,7 @@ import { MessageCircle, Reply, Edit2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { createClient } from '@/lib/supabase/client'
+import VoteButtons from './VoteButtons'
 
 interface Comment {
     id: string
@@ -13,6 +14,7 @@ interface Comment {
     parent_id: string | null
     created_at: string
     updated_at: string
+    vote_score?: number
     author?: {
         id: string
         full_name: string
@@ -41,6 +43,8 @@ export default function CommentSection({ postId, userId }: CommentSectionProps) 
         fetchComments()
     }, [postId])
 
+    const [commentVotes, setCommentVotes] = useState<Record<string, number>>({})
+
     const fetchComments = async () => {
         const { data, error } = await supabase
             .from('comments')
@@ -52,6 +56,24 @@ export default function CommentSection({ postId, userId }: CommentSectionProps) 
             .order('created_at', { ascending: true })
 
         if (!error && data) {
+            // Fetch user votes for these comments
+            if (userId) {
+                const commentIds = data.map(c => c.id)
+                const { data: votes } = await supabase
+                    .from('comment_votes')
+                    .select('comment_id, vote_type')
+                    .eq('user_id', userId)
+                    .in('comment_id', commentIds)
+
+                if (votes) {
+                    const votesMap = votes.reduce((acc, vote) => {
+                        acc[vote.comment_id] = vote.vote_type
+                        return acc
+                    }, {} as Record<string, number>)
+                    setCommentVotes(votesMap)
+                }
+            }
+
             // Organize comments into tree structure
             const commentMap = new Map<string, Comment>()
             const rootComments: Comment[] = []
@@ -199,6 +221,15 @@ export default function CommentSection({ postId, userId }: CommentSectionProps) 
                         </div>
 
                         <div className="flex items-center gap-3 mt-2 text-xs">
+                            <VoteButtons
+                                targetId={comment.id}
+                                targetType="comment"
+                                initialScore={comment.vote_score || 0}
+                                initialUserVote={commentVotes[comment.id] || null}
+                                userId={userId}
+                                authorId={comment.author_id}
+                            />
+
                             {userId && !isEditing && (
                                 <button
                                     onClick={() => setReplyingTo(comment.id)}

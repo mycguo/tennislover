@@ -153,7 +153,8 @@ export default async function PostDetailPage({
                     <div className="flex items-center justify-between py-4 border-t border-b">
                         <div className="flex items-center gap-6">
                             <VoteButtons
-                                postId={post.id}
+                                targetId={post.id}
+                                targetType="post"
                                 initialScore={post.vote_score || 0}
                                 initialUserVote={userVote}
                                 userId={user?.id}

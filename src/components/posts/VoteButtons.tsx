@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 
 interface VoteButtonsProps {
-    postId: string
+    targetId: string
+    targetType?: 'post' | 'comment'
     initialScore?: number
     initialUserVote?: number | null
     userId?: string
@@ -14,7 +15,8 @@ interface VoteButtonsProps {
 }
 
 export default function VoteButtons({
-    postId,
+    targetId,
+    targetType = 'post',
     initialScore = 0,
     initialUserVote = null,
     userId,
@@ -26,6 +28,9 @@ export default function VoteButtons({
     const supabase = createClient()
     const isOwner = userId && authorId && userId === authorId
 
+    const tableName = targetType === 'post' ? 'post_votes' : 'comment_votes'
+    const idColumn = targetType === 'post' ? 'post_id' : 'comment_id'
+
     const handleVote = async (voteType: 1 | -1) => {
         if (!userId) {
             alert('You must be logged in to vote')
@@ -33,7 +38,7 @@ export default function VoteButtons({
         }
 
         if (isOwner) {
-            alert('You cannot vote on your own post')
+            alert(`You cannot vote on your own ${targetType}`)
             return
         }
 
@@ -43,9 +48,9 @@ export default function VoteButtons({
             // If clicking the same vote, remove it
             if (userVote === voteType) {
                 const { error } = await supabase
-                    .from('post_votes')
+                    .from(tableName)
                     .delete()
-                    .eq('post_id', postId)
+                    .eq(idColumn, targetId)
                     .eq('user_id', userId)
 
                 if (error) throw error
@@ -55,17 +60,20 @@ export default function VoteButtons({
                 setUserVote(null)
             } else {
                 // Insert or update vote
+                // We construct the object dynamically or use explicit mapping
+                const voteData = {
+                    [idColumn]: targetId,
+                    user_id: userId,
+                    vote_type: voteType,
+                    updated_at: new Date().toISOString(),
+                }
+
                 const { error } = await supabase
-                    .from('post_votes')
+                    .from(tableName)
                     .upsert(
+                        voteData,
                         {
-                            post_id: postId,
-                            user_id: userId,
-                            vote_type: voteType,
-                            updated_at: new Date().toISOString(),
-                        },
-                        {
-                            onConflict: 'post_id,user_id',
+                            onConflict: `${idColumn},user_id`,
                         }
                     )
 
@@ -93,7 +101,7 @@ export default function VoteButtons({
                 disabled={loading || !userId || !!isOwner}
                 className={`p-1 h-8 w-8 ${userVote === 1 ? 'text-green-600 bg-green-50' : 'text-gray-600'
                     } ${isOwner ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title={isOwner ? "You cannot vote on your own post" : "Upvote"}
+                title={isOwner ? `You cannot vote on your own ${targetType}` : "Upvote"}
             >
                 <ArrowUp className="w-4 h-4" />
             </Button>
@@ -112,7 +120,7 @@ export default function VoteButtons({
                 disabled={loading || !userId || !!isOwner}
                 className={`p-1 h-8 w-8 ${userVote === -1 ? 'text-red-600 bg-red-50' : 'text-gray-600'
                     } ${isOwner ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title={isOwner ? "You cannot vote on your own post" : "Downvote"}
+                title={isOwner ? `You cannot vote on your own ${targetType}` : "Downvote"}
             >
                 <ArrowDown className="w-4 h-4" />
             </Button>
