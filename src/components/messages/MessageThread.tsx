@@ -109,7 +109,7 @@ export function MessageThread({
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0 w-full">
       {/* Header */}
       <div className="border-b p-4 flex items-center gap-3">
         {onBack && (
@@ -132,7 +132,7 @@ export function MessageThread({
       {listingData && <ListingContext listing={listingData} />}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
         {messages.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-muted-foreground">No messages yet</p>
