@@ -77,9 +77,6 @@ export default function Header({ user }: HeaderProps) {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.id}`}>Your Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
                     <Link href="/profile/edit">Edit Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
