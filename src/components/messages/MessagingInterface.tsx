@@ -72,26 +72,33 @@ export function MessagingInterface({
 
   // Realtime subscription for all messages
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+
     const channel = supabase
       .channel('messages-channel')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
           table: 'messages',
         },
-        () => {
-          // Refetch conversations when any message event occurs
-          fetchConversations()
+        async (payload: any) => {
+          // Debounce the refetch to avoid multiple rapid updates
+          clearTimeout(timeoutId)
+          timeoutId = setTimeout(async () => {
+            const convos = await getConversations()
+            setConversations(convos)
+          }, 300)
         }
       )
       .subscribe()
 
     return () => {
+      clearTimeout(timeoutId)
       supabase.removeChannel(channel)
     }
-  }, [supabase])
+  }, [currentUserId, supabase])
 
   if (loading) {
     return (
