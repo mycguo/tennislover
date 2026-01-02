@@ -113,12 +113,8 @@ export function MessagingInterface({
   return (
     <Card className="overflow-hidden">
       <div className="grid md:grid-cols-3 h-[600px]">
-        {/* Left side: Conversation List */}
-        <div
-          className={`border-r md:col-span-1 md:block ${
-            showMobileThread ? 'hidden' : 'block'
-          }`}
-        >
+        {/* Left side: Conversation List - Always visible on desktop (md+) */}
+        <div className="border-r md:col-span-1 hidden md:block">
           <ConversationList
             conversations={conversations}
             selectedUserId={selectedConversation}
@@ -130,12 +126,41 @@ export function MessagingInterface({
           />
         </div>
 
-        {/* Right side: Message Thread */}
-        <div
-          className={`md:col-span-2 md:block ${
-            !showMobileThread ? 'hidden' : 'block'
-          }`}
-        >
+        {/* Left side: Conversation List - Mobile only, toggle with thread */}
+        <div className={`border-r block md:hidden ${showMobileThread ? 'hidden' : 'block'}`}>
+          <ConversationList
+            conversations={conversations}
+            selectedUserId={selectedConversation}
+            onSelectConversation={(userId) => {
+              setSelectedConversation(userId)
+              setShowMobileThread(true)
+            }}
+            currentUserId={currentUserId}
+          />
+        </div>
+
+        {/* Right side: Message Thread - Always visible on desktop (md+) */}
+        <div className="md:col-span-2 hidden md:block">
+          {selectedConversation ? (
+            <MessageThread
+              otherUserId={selectedConversation}
+              currentUserId={currentUserId}
+              listingId={initialListingId}
+              onBack={() => setShowMobileThread(false)}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+              <div className="text-6xl mb-4">💬</div>
+              <h3 className="text-xl font-semibold mb-2">Select a conversation</h3>
+              <p className="text-muted-foreground">
+                Choose a conversation from the list to start messaging
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Right side: Message Thread - Mobile only, toggle with list */}
+        <div className={`block md:hidden ${!showMobileThread ? 'hidden' : 'block'}`}>
           {selectedConversation ? (
             <MessageThread
               otherUserId={selectedConversation}
