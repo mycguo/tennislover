@@ -61,14 +61,35 @@ Go to your Supabase project → SQL Editor and run each migration file in order 
 3. Click "Run"
 4. Repeat for all 10 migration files in order
 
-### 5. Configure Google OAuth
+### 5. Configure Google OAuth 2.0
+
+**Step 1: Set up Google OAuth credentials**
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create OAuth 2.0 credentials
-3. Add authorized redirect URI: `http://localhost:3000/auth/callback`
-4. In Supabase Dashboard → Authentication → Providers:
-   - Enable Google provider
-   - Add your Google Client ID and Secret
+2. Create a new project or select an existing one
+3. Navigate to "APIs & Services" → "Credentials"
+4. Click "Create Credentials" → "OAuth 2.0 Client ID"
+5. Configure the OAuth consent screen if needed
+6. Select "Web application" as the application type
+7. Add **Authorized redirect URIs**:
+   - For Supabase Auth: `https://your-project-ref.supabase.co/auth/v1/callback`
+   - Replace `your-project-ref` with your actual Supabase project reference ID
+   - (You can find this in your Supabase project URL)
+8. Click "Create" and copy your Client ID and Client Secret
+
+**Step 2: Configure Supabase**
+
+1. Go to your Supabase Dashboard → Authentication → Providers
+2. Find "Google" and toggle it on
+3. Paste your Google Client ID
+4. Paste your Google Client Secret
+5. Click "Save"
+
+**Important:** The OAuth2 flow works like this:
+- User clicks "Sign in with Google" → Redirects to Google
+- Google authenticates → Redirects to Supabase: `https://your-project-ref.supabase.co/auth/v1/callback`
+- Supabase processes auth → Redirects to your app: `http://localhost:3000/auth/callback`
+- Your app exchanges code for session
 
 ### 6. Run the Development Server
 
@@ -77,6 +98,13 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the application!
+
+## 📚 Documentation
+
+For detailed guides, check the `docs/` folder:
+
+- **[OAuth Setup Guide](docs/OAUTH_SETUP.md)** - Comprehensive OAuth2 configuration with troubleshooting
+- **[Deployment Checklist](docs/DEPLOYMENT_CHECKLIST.md)** - Step-by-step Vercel deployment guide
 
 ## Project Structure
 
@@ -109,12 +137,20 @@ All tables have Row Level Security (RLS) enabled.
 
 ## Deployment to Vercel
 
-1. Push to GitHub
-2. Import repository in Vercel
-3. Add environment variables
-4. Deploy!
+For complete deployment instructions, see **[docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md)**
 
-Update Google OAuth with production URL: `https://your-domain.vercel.app/auth/callback`
+### Quick Deploy
+
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `NEXT_PUBLIC_SITE_URL`
+4. Update Supabase URL Configuration with your Vercel URL
+5. Deploy!
+
+**Note:** The Google OAuth redirect URI (`https://your-project-ref.supabase.co/auth/v1/callback`) stays the same for both development and production.
 
 ## License
 
