@@ -8,7 +8,7 @@ A vibrant community platform for tennis enthusiasts to connect, share, and grow 
 - **Equipment Marketplace** - Buy, sell, and trade tennis gear (Coming Soon)
 - **Skills Exchange** - Find coaches, hitting partners, and practice groups (Coming Soon)
 - **User Profiles** - Showcase your tennis journey (Coming Soon)
-- **Google OAuth** - Secure and fast authentication
+- **Dual Authentication** - Sign in with Google OAuth or WeChat (via Auth0)
 - **Real-time Updates** - Powered by Supabase
 
 ## Tech Stack
@@ -16,7 +16,9 @@ A vibrant community platform for tennis enthusiasts to connect, share, and grow 
 - **Frontend**: Next.js 14 (App Router), React 18, TypeScript
 - **Styling**: Tailwind CSS, shadcn/ui components
 - **Backend**: Supabase (PostgreSQL + Auth + Storage)
-- **Authentication**: Google OAuth via Supabase
+- **Authentication**:
+  - Google OAuth via Supabase
+  - WeChat OAuth via Auth0 (optional)
 - **Deployment**: Vercel
 
 ## Getting Started
@@ -103,7 +105,8 @@ Open [http://localhost:3000](http://localhost:3000) to see the application!
 
 For detailed guides, check the `docs/` folder:
 
-- **[OAuth Setup Guide](docs/OAUTH_SETUP.md)** - Comprehensive OAuth2 configuration with troubleshooting
+- **[OAuth Setup Guide](docs/OAUTH_SETUP.md)** - Google OAuth2 configuration with troubleshooting
+- **[Auth0 + WeChat Setup](docs/AUTH0_WECHAT_SETUP.md)** - WeChat login via Auth0 (optional)
 - **[Deployment Checklist](docs/DEPLOYMENT_CHECKLIST.md)** - Step-by-step Vercel deployment guide
 
 ## Project Structure

@@ -1,6 +1,7 @@
 'use client'
 
 import AuthButton from '@/components/common/AuthButton'
+import WeChatButton from '@/components/common/WeChatButton'
 
 export default function CTA() {
   return (
@@ -12,7 +13,10 @@ export default function CTA() {
         <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
           Connect with thousands of tennis enthusiasts. Share your passion, improve your game, and make lasting connections.
         </p>
-        <AuthButton variant="default" size="lg" />
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <AuthButton variant="default" size="lg" />
+          <WeChatButton variant="default" size="lg" />
+        </div>
         <p className="mt-4 text-sm opacity-75">
           Free to join • No credit card required
         </p>

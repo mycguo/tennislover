@@ -17,13 +17,21 @@ interface HeaderProps {
     email?: string
     full_name?: string
     avatar_url?: string
+    auth_provider?: string
   } | null
 }
 
 export default function Header({ user }: HeaderProps) {
   const handleSignOut = async () => {
-    await fetch('/auth/signout', { method: 'POST' })
-    window.location.href = '/'
+    // Check auth provider and sign out accordingly
+    if (user?.auth_provider === 'auth0-wechat') {
+      // Auth0 logout
+      window.location.href = '/api/auth/logout'
+    } else {
+      // Supabase logout
+      await fetch('/auth/signout', { method: 'POST' })
+      window.location.href = '/'
+    }
   }
 
   return (

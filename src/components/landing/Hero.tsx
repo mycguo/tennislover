@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import AuthButton from '@/components/common/AuthButton'
+import WeChatButton from '@/components/common/WeChatButton'
 
 export default function Hero() {
   return (
@@ -30,13 +31,19 @@ export default function Hero() {
               find hitting partners, and level up your game together.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <AuthButton variant="default" size="lg" />
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <AuthButton variant="default" size="lg" />
+                <WeChatButton variant="default" size="lg" />
+              </div>
               <Button variant="outline" size="lg" onClick={() => {
                 document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
               }}>
                 Explore Community
               </Button>
+              <p className="text-xs text-gray-500 text-center">
+                Sign in with Google or WeChat to get started
+              </p>
             </div>
 
             <div className="flex items-center gap-8 pt-4">
