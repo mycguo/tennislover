@@ -14,7 +14,7 @@ export default function CTA() {
         </p>
         <AuthButton variant="default" size="lg" />
         <p className="mt-4 text-sm opacity-75">
-          Free to join • No credit card required
+          Free to join
         </p>
       </div>
     </section>
