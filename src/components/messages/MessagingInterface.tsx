@@ -115,8 +115,8 @@ export function MessagingInterface({
       <div className="grid md:grid-cols-3 h-[600px]">
         {/* Left side: Conversation List */}
         <div
-          className={`border-r md:col-span-1 ${
-            showMobileThread ? 'hidden md:block' : 'block'
+          className={`border-r md:col-span-1 md:block ${
+            showMobileThread ? 'hidden' : 'block'
           }`}
         >
           <ConversationList
@@ -132,8 +132,8 @@ export function MessagingInterface({
 
         {/* Right side: Message Thread */}
         <div
-          className={`md:col-span-2 ${
-            !showMobileThread ? 'hidden md:block' : 'block'
+          className={`md:col-span-2 md:block ${
+            !showMobileThread ? 'hidden' : 'block'
           }`}
         >
           {selectedConversation ? (
