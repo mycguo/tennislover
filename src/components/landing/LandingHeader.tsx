@@ -9,7 +9,7 @@ export default function LandingHeader() {
                     <span className="text-3xl">🎾</span>
                     <span className="text-xl font-bold text-gray-900">Tennis Lover</span>
                 </Link>
-                <AuthButton variant="ghost" className="font-medium text-gray-700 hover:text-green-600 hover:bg-green-50" showIcon={false}>
+                <AuthButton variant="ghost" className="font-medium text-gray-700 hover:text-green-600 hover:bg-green-50" showIcon={true}>
                     Log In
                 </AuthButton>
             </div>

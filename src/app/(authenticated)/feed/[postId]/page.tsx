@@ -13,8 +13,9 @@ import { Metadata } from 'next'
 export async function generateMetadata({
     params,
 }: {
-    params: { postId: string }
+    params: Promise<{ postId: string }>
 }): Promise<Metadata> {
+    const { postId } = await params
     const supabase = await createClient()
 
     // Fetch post for metadata (Next.js dedupes this request if it matches the page fetch?)
@@ -27,7 +28,7 @@ export async function generateMetadata({
             content, 
             images:post_images(storage_path, display_order)
         `)
-        .eq('id', params.postId)
+        .eq('id', postId)
         .single()
 
     if (!post) {
@@ -56,8 +57,9 @@ export async function generateMetadata({
 export default async function PostDetailPage({
     params,
 }: {
-    params: { postId: string }
+    params: Promise<{ postId: string }>
 }) {
+    const { postId } = await params
     const supabase = await createClient()
 
     // Get current user
@@ -74,7 +76,7 @@ export default async function PostDetailPage({
         label:labels(id, name, color)
       )
     `)
-        .eq('id', params.postId)
+        .eq('id', postId)
         .single()
 
     if (error || !post) {
@@ -87,7 +89,7 @@ export default async function PostDetailPage({
         const { data: voteData } = await supabase
             .from('post_votes')
             .select('vote_type')
-            .eq('post_id', params.postId)
+            .eq('post_id', postId)
             .eq('user_id', user.id)
             .single()
 
@@ -98,7 +100,7 @@ export default async function PostDetailPage({
     await supabase
         .from('posts')
         .update({ view_count: (post.view_count || 0) + 1 })
-        .eq('id', params.postId)
+        .eq('id', postId)
 
     // Sort images by display order
     const sortedImages = (post.images || []).sort(
@@ -109,7 +111,7 @@ export default async function PostDetailPage({
     const labels = (post.label_assignments || []).map((la: any) => la.label)
 
     // Construct full URL for sharing
-    const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/feed/${params.postId}`
+    const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/feed/${postId}`
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
