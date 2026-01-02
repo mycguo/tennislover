@@ -59,6 +59,12 @@ export function MessageThread({
     loadThread()
   }, [otherUserId, listingId])
 
+  // Function to refresh messages
+  const refreshMessages = async () => {
+    const updatedMessages = await getMessages(otherUserId, listingId)
+    setMessages(updatedMessages)
+  }
+
   // Realtime subscription for new messages in this thread
   useEffect(() => {
     const channel = supabase
@@ -73,24 +79,8 @@ export function MessageThread({
         },
         async () => {
           // Refetch messages when new message from other user
-          const updatedMessages = await getMessages(otherUserId, listingId)
-          setMessages(updatedMessages)
+          await refreshMessages()
           await markAsRead(otherUserId)
-          scrollToBottom()
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `sender_id=eq.${currentUserId}`
-        },
-        async () => {
-          // Refetch messages when current user sends (for optimistic update)
-          const updatedMessages = await getMessages(otherUserId, listingId)
-          setMessages(updatedMessages)
           scrollToBottom()
         }
       )
@@ -100,6 +90,12 @@ export function MessageThread({
       supabase.removeChannel(channel)
     }
   }, [otherUserId, currentUserId, listingId, supabase])
+
+  // Callback for when message is sent (optimistic update)
+  const handleMessageSent = async () => {
+    await refreshMessages()
+    scrollToBottom()
+  }
 
   // Get the first message's listing for context (if exists)
   const listingData = messages.find(m => m.listing_id)?.listing
@@ -190,7 +186,7 @@ export function MessageThread({
       <MessageInput
         recipientId={otherUserId}
         listingId={listingId}
-        onMessageSent={scrollToBottom}
+        onMessageSent={handleMessageSent}
       />
     </div>
   )
