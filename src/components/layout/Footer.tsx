@@ -15,7 +15,7 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-400">
               <li><a href="#" className="hover:text-white transition-colors">Discussion Feed</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Marketplace</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Skills Exchange</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Events</a></li>
             </ul>
           </div>
 

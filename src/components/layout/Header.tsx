@@ -43,8 +43,8 @@ export default function Header({ user }: HeaderProps) {
             <Link href="/marketplace" className="text-gray-600 hover:text-gray-900 font-medium">
               Marketplace
             </Link>
-            <Link href="/skills" className="text-gray-600 hover:text-gray-900 font-medium">
-              Skills
+            <Link href="/events" className="text-gray-600 hover:text-gray-900 font-medium">
+              Events
             </Link>
             <Link href="/messages" className="text-gray-600 hover:text-gray-900 font-medium">
               Messages
