@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { createEvent } from '@/app/(authenticated)/events/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +14,7 @@ const initialState = {
 }
 
 export function CreateEventForm() {
-  const [state, formAction] = useFormState(createEvent, initialState)
+  const [state, formAction] = useActionState(createEvent, initialState)
 
   return (
     <form action={formAction} className="space-y-6">
