@@ -139,68 +139,6 @@ export function CreateEventForm() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Registration & Contact</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="max_participants">Max Participants</Label>
-              <Input
-                id="max_participants"
-                name="max_participants"
-                type="number"
-                min="1"
-                placeholder="Leave empty for unlimited"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="fee">Registration Fee ($)</Label>
-              <Input
-                id="fee"
-                name="fee"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contact_email">Contact Email</Label>
-            <Input
-              id="contact_email"
-              name="contact_email"
-              type="email"
-              placeholder="your@email.com"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contact_phone">Contact Phone</Label>
-            <Input
-              id="contact_phone"
-              name="contact_phone"
-              type="tel"
-              placeholder="(555) 123-4567"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="external_link">External Link</Label>
-            <Input
-              id="external_link"
-              name="external_link"
-              type="url"
-              placeholder="https://example.com/registration"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       {state && 'error' in state && (
         <div className="bg-red-50 text-red-600 p-4 rounded-lg">
           {state.error}
