@@ -2,21 +2,59 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { EquipmentListing } from '@/types/marketplace'
+import { EquipmentListing, ListingStatus } from '@/types/marketplace'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { MapPin, MessageCircle, Share2, Tag, Calendar } from 'lucide-react'
+import { MapPin, MessageCircle, Share2, Calendar } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface ListingDetailProps {
     listing: EquipmentListing
+    currentUserId?: string
 }
 
-export function ListingDetail({ listing }: ListingDetailProps) {
+export function ListingDetail({ listing, currentUserId }: ListingDetailProps) {
     const [selectedImage, setSelectedImage] = useState(listing.images?.[0] || '/placeholder-equipment.jpg')
+    const [status, setStatus] = useState<ListingStatus>(listing.status)
+    const [statusUpdating, setStatusUpdating] = useState(false)
+    const [statusFeedback, setStatusFeedback] = useState<'success' | 'error' | null>(null)
+    const supabase = createClient()
+
+    const isOwner = listing.seller_id === currentUserId
+
+    const statusOptions: { value: ListingStatus; label: string }[] = [
+        { value: 'available', label: 'Available' },
+        { value: 'pending', label: 'Pending' },
+        { value: 'sold', label: 'Sold' }
+    ]
+
+    const handleStatusChange = async (newStatus: ListingStatus) => {
+        if (!isOwner || newStatus === status) return
+
+        setStatusUpdating(true)
+        setStatusFeedback(null)
+
+        const { error } = await supabase
+            .from('equipment_listings')
+            .update({ status: newStatus })
+            .eq('id', listing.id)
+
+        if (error) {
+            console.error('Failed to update status:', error)
+            setStatusFeedback('error')
+        } else {
+            setStatus(newStatus)
+            setStatusFeedback('success')
+        }
+
+        setStatusUpdating(false)
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -64,8 +102,8 @@ export function ListingDetail({ listing }: ListingDetailProps) {
                         <Badge variant="secondary" className="capitalize text-sm px-3 py-1">
                             Condition: {listing.condition.replace('_', ' ')}
                         </Badge>
-                        <Badge variant={listing.status === 'available' ? 'default' : 'destructive'} className="uppercase text-xs">
-                            {listing.status}
+                        <Badge variant={status === 'available' ? 'default' : 'destructive'} className="uppercase text-xs">
+                            {status}
                         </Badge>
                     </div>
                     <div className="text-4xl font-bold text-primary mb-1">
@@ -93,6 +131,44 @@ export function ListingDetail({ listing }: ListingDetailProps) {
                         </div>
                     </CardContent>
                 </Card>
+
+                {isOwner && (
+                    <Card>
+                        <CardContent className="p-6 space-y-4">
+                            <div>
+                                <h3 className="font-semibold text-lg">Manage Listing</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Update the item status once it is reserved or sold.
+                                </p>
+                            </div>
+                            <div className="max-w-xs space-y-2">
+                                <Label htmlFor="listing-status">Status</Label>
+                                <Select
+                                    value={status}
+                                    onValueChange={(value) => handleStatusChange(value as ListingStatus)}
+                                    disabled={statusUpdating}
+                                >
+                                    <SelectTrigger id="listing-status">
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {statusOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            {statusFeedback === 'success' && (
+                                <p className="text-sm text-green-600">Status updated.</p>
+                            )}
+                            {statusFeedback === 'error' && (
+                                <p className="text-sm text-destructive">Failed to update status. Please try again.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Seller Info */}
                 <Card>

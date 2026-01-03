@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getListing } from '../actions'
+import { createClient } from '@/lib/supabase/server'
 import { ListingDetail } from '@/components/marketplace/ListingDetail'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -19,6 +20,9 @@ export default async function ListingDetailPage({ params }: Props) {
         notFound()
     }
 
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
     return (
         <div className="container mx-auto px-4 py-8">
             <Button variant="ghost" className="mb-6 pl-0 hover:bg-transparent hover:text-primary" asChild>
@@ -28,7 +32,7 @@ export default async function ListingDetailPage({ params }: Props) {
                 </Link>
             </Button>
 
-            <ListingDetail listing={listing} />
+            <ListingDetail listing={listing} currentUserId={user?.id} />
         </div>
     )
 }
