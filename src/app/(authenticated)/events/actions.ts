@@ -2,7 +2,6 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { EventWithOrganizer, CreateEventInput, EventRegistrationWithUser } from '@/types/event'
 
 export async function getEvents(filters?: {
@@ -121,7 +120,8 @@ export async function createEvent(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/events')
-    redirect(`/events/${data.id}`)
+    revalidatePath(`/events/${data.id}`)
+    return { success: true, eventId: data.id }
   } catch (error) {
     console.error('Error:', error)
     return { error: 'Something went wrong' }

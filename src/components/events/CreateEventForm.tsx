@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { createEvent } from '@/app/(authenticated)/events/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +15,14 @@ const initialState = {
 }
 
 export function CreateEventForm() {
+  const router = useRouter()
   const [state, formAction] = useActionState(createEvent, initialState)
+
+  useEffect(() => {
+    if (state?.success && state?.eventId) {
+      router.push(`/events/${state.eventId}`)
+    }
+  }, [state, router])
 
   return (
     <form action={formAction} className="space-y-6">
