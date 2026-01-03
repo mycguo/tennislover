@@ -10,11 +10,11 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-const initialState: {
-  error?: string
-  success?: boolean
-  eventId?: string
-} = {}
+const initialState = {
+  error: undefined,
+  success: undefined,
+  eventId: undefined,
+} as { error?: string; success?: boolean; eventId?: string }
 
 export function CreateEventForm() {
   const router = useRouter()

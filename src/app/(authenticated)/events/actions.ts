@@ -62,7 +62,10 @@ export async function getEvent(id: string): Promise<EventWithOrganizer | null> {
   return data
 }
 
-export async function createEvent(prevState: any, formData: FormData) {
+export async function createEvent(
+  prevState: { error?: string; success?: boolean; eventId?: string } | null,
+  formData: FormData
+) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
