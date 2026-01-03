@@ -10,18 +10,12 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-const initialState = {
-  error: undefined,
-  success: undefined,
-  eventId: undefined,
-} as { error?: string; success?: boolean; eventId?: string }
-
 export function CreateEventForm() {
   const router = useRouter()
-  const [state, formAction] = useActionState(createEvent, initialState)
+  const [state, formAction] = useActionState(createEvent, null)
 
   useEffect(() => {
-    if (state?.success && state?.eventId) {
+    if (state && 'success' in state && state.success) {
       router.push(`/events/${state.eventId}`)
     }
   }, [state, router])
@@ -207,7 +201,7 @@ export function CreateEventForm() {
         </CardContent>
       </Card>
 
-      {state?.error && (
+      {state && 'error' in state && (
         <div className="bg-red-50 text-red-600 p-4 rounded-lg">
           {state.error}
         </div>
