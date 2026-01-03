@@ -6,7 +6,7 @@ import { getMessages, getUserProfile, markAsRead } from '@/app/(authenticated)/m
 import { MessageWithProfiles, UserProfile } from '@/types/message'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, RotateCcw } from 'lucide-react'
 import { MessageInput } from './MessageInput'
 import { ListingContext } from './ListingContext'
 
@@ -111,21 +111,31 @@ export function MessageThread({
   return (
     <div className="flex flex-col h-full min-h-0 w-full">
       {/* Header */}
-      <div className="border-b p-4 flex items-center gap-3">
-        {onBack && (
-          <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        )}
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={otherUserProfile?.avatar_url || undefined} />
-          <AvatarFallback>{otherUserProfile?.full_name?.[0] || '?'}</AvatarFallback>
-        </Avatar>
-        <div>
-          <p className="font-semibold">
-            {otherUserProfile?.full_name || 'Unknown User'}
-          </p>
+      <div className="border-b p-4 flex items-center gap-3 justify-between">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={otherUserProfile?.avatar_url || undefined} />
+            <AvatarFallback>{otherUserProfile?.full_name?.[0] || '?'}</AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-semibold">
+              {otherUserProfile?.full_name || 'Unknown User'}
+            </p>
+          </div>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={refreshMessages}
+          aria-label="Refresh messages"
+        >
+          <RotateCcw className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Listing Context (if applicable) */}
