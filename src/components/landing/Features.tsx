@@ -13,9 +13,9 @@ export default function Features() {
       description: 'Buy, sell, or trade tennis gear with fellow enthusiasts. Find that perfect racket or sell equipment you no longer use.',
     },
     {
-      icon: '🤝',
-      title: 'Skills Exchange',
-      description: 'Find coaches, hitting partners, or practice groups. Whether you\'re teaching or learning, connect with the right people.',
+      icon: '📅',
+      title: 'Tennis Events',
+      description: 'Discover and join local tournaments, clinics, social play sessions, and leagues. Create your own events and build the tennis community.',
     },
     {
       icon: '👥',
